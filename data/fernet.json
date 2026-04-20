@@ -1,0 +1,22 @@
+{
+  "id": "fernet",
+  "name": "Fernet",
+  "category": "Modern Encryption",
+  "introduced": 2013,
+  "creator": "Python cryptography library team",
+  "strength": "secure",
+  "breakability": "Relies on AES-128-CBC + HMAC-SHA256. No known practical attack.",
+  "modern_use": "Python application secrets, config encryption, API token storage",
+  "description": "Fernet is a high-level symmetric authenticated encryption scheme from the Python cryptography library. It uses AES-128-CBC for encryption and HMAC-SHA256 for authentication. The key is a URL-safe base64-encoded 32-byte value. Fernet is designed to be hard to misuse.",
+  "key_sizes": [
+    "128-bit (AES) + 128-bit (HMAC) = 256-bit total key material"
+  ],
+  "notes": "Fernet tokens include a timestamp. Use MultiFernet for key rotation.",
+  "did_you_know": "Fernet gets its name from the Italian digestif liquor - it was named as a playful nod to something that goes down smoothly.",
+  "related_algorithms": [
+    "AES",
+    "HMAC"
+  ],
+  "wikipedia_url": "https://en.wikipedia.org/wiki/Fernet_(cryptography)",
+  "search_query": "Fernet encryption python cryptography"
+}

@@ -1,0 +1,26 @@
+[theme.light]
+base = "light"
+primaryColor = "#1A73E8"
+backgroundColor = "#F8F9FA"
+secondaryBackgroundColor = "#FFFFFF"
+textColor = "#202124"
+font = "sans serif"
+
+[theme.dark]
+base = "dark"
+primaryColor = "#4FA3E0"
+backgroundColor = "#0F1117"
+secondaryBackgroundColor = "#1A1D27"
+textColor = "#E8EAED"
+font = "sans serif"
+
+[server]
+headless = true
+enableCORS = false
+enableXsrfProtection = true
+
+[browser]
+gatherUsageStats = false
+
+[runner]
+fastReruns = true

@@ -1,0 +1,25 @@
+{
+  "id": "rsa",
+  "name": "RSA",
+  "category": "Modern Encryption",
+  "introduced": 1977,
+  "creator": "Rivest, Shamir, Adleman (MIT)",
+  "strength": "secure",
+  "breakability": "2048-bit: no known practical attack. 1024-bit: potentially factored with nation-state resources.",
+  "modern_use": "TLS key exchange, digital signatures, SSH keys, email encryption (PGP/S-MIME)",
+  "description": "RSA is the most widely used asymmetric encryption algorithm. Security relies on the computational difficulty of factoring large integers. Two keys: a public key for encryption, a private key for decryption. RSA-OAEP with SHA-256 is the modern secure padding scheme.",
+  "key_sizes": [
+    "1024-bit (legacy)",
+    "2048-bit (standard)",
+    "4096-bit (high security)"
+  ],
+  "notes": "Always use OAEP padding. PKCS1v15 padding is vulnerable to padding oracle attacks. RSA is slow - in practice used to encrypt symmetric keys, not bulk data.",
+  "did_you_know": "The RSA algorithm was independently discovered by British GCHQ mathematician Clifford Cocks in 1973, but kept classified for 24 years.",
+  "related_algorithms": [
+    "AES",
+    "Fernet",
+    "ECC"
+  ],
+  "wikipedia_url": "https://en.wikipedia.org/wiki/RSA_(cryptosystem)",
+  "search_query": "RSA asymmetric encryption"
+}

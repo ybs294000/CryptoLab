@@ -1,0 +1,23 @@
+{
+  "id": "hash",
+  "name": "Hash Functions",
+  "category": "Hashing",
+  "introduced": "1992 (SHA-0), 2001 (SHA-2), 2015 (SHA-3)",
+  "creator": "NSA (SHA), NIST, Guido Bertoni et al. (SHA-3/Keccak)",
+  "strength": "varies",
+  "breakability": "MD5 and SHA-1 are broken (collision attacks). SHA-256+ remain secure.",
+  "modern_use": "Password storage (with salt), file integrity, digital signatures, blockchain, deduplication",
+  "description": "Cryptographic hash functions transform arbitrary-length input into a fixed-size digest. Properties: pre-image resistance (cannot reverse), second pre-image resistance (cannot find same hash for different input), collision resistance (cannot find two inputs with same hash). SHA-3 uses Keccak sponge construction, different from SHA-2.",
+  "key_sizes": [
+    "No keys - hash functions are unkeyed"
+  ],
+  "notes": "Never use MD5 or SHA-1 for security purposes. For password hashing, use bcrypt, scrypt, or Argon2 (not raw SHA).",
+  "did_you_know": "The SHA-1 algorithm was officially broken in 2017 with the SHAttered attack, which found the first known SHA-1 collision using 9.2 quintillion SHA-1 computations.",
+  "related_algorithms": [
+    "HMAC",
+    "BLAKE2",
+    "bcrypt"
+  ],
+  "wikipedia_url": "https://en.wikipedia.org/wiki/Cryptographic_hash_function",
+  "search_query": "cryptographic hash functions SHA"
+}

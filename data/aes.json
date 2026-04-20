@@ -1,0 +1,25 @@
+{
+  "id": "aes",
+  "name": "AES (Advanced Encryption Standard)",
+  "category": "Modern Encryption",
+  "introduced": 2001,
+  "creator": "Joan Daemen and Vincent Rijmen",
+  "strength": "secure",
+  "breakability": "No practical attack known. Brute-force infeasible.",
+  "modern_use": "TLS/HTTPS, disk encryption, VPNs, Wi-Fi (WPA2/WPA3), file encryption",
+  "description": "AES is the gold-standard symmetric block cipher, selected by NIST in 2001 after a 5-year competition. Operates on 128-bit blocks with 128/192/256-bit keys. GCM mode adds authenticated encryption protecting both confidentiality and integrity.",
+  "key_sizes": [
+    "128-bit",
+    "192-bit",
+    "256-bit"
+  ],
+  "notes": "Use GCM or EAX for authenticated encryption. Never reuse nonces with the same key. AES-256-GCM is the recommended default.",
+  "did_you_know": "AES replaced DES in 2001 and is estimated to be used in over 90% of internet TLS connections today.",
+  "related_algorithms": [
+    "Fernet",
+    "ChaCha20-Poly1305",
+    "Triple DES"
+  ],
+  "wikipedia_url": "https://en.wikipedia.org/wiki/Advanced_Encryption_Standard",
+  "search_query": "AES encryption standard"
+}

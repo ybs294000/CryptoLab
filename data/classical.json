@@ -1,0 +1,56 @@
+{
+  "id": "classical",
+  "name": "Classical Ciphers",
+  "category": "Classical (Educational)",
+  "introduced": "Various (50 BC - 1940s)",
+  "creator": "Various (Caesar, Vigenere, Playfair, Beaufort, Delastelle, etc.)",
+  "strength": "historical",
+  "breakability": "All classical ciphers are broken. Most are trivially defeated by frequency analysis or known-plaintext attacks. None provide any modern security.",
+  "modern_use": "Puzzles, CTF competitions, escape rooms, education, historical research.",
+  "description": "Classical ciphers are the historical precursors to modern cryptography. They operate on the alphabet (A-Z) using simple mathematical transformations. Substitution ciphers replace letters with other letters. Transposition ciphers rearrange letter positions. Polyalphabetic ciphers use multiple alphabets. All can be broken with pencil and paper given enough ciphertext.",
+  "key_sizes": [
+    "Caesar: 1-25 (effectively 5 bits)",
+    "Vigenere: length of keyword",
+    "Playfair: 5x5 grid (~roughly 88 bits but not computationally secure)",
+    "Simple Substitution: 26! ~ 4 x 10^26 keys (but broken by frequency analysis)"
+  ],
+  "notes": "Input is processed as alphabetic characters only. Numbers, spaces, and punctuation are preserved in output but not encrypted. Case is preserved. Classical ciphers operate on A-Z.",
+  "did_you_know": "The Vigenere cipher was considered unbreakable for 300 years - until Charles Babbage (and independently Friedrich Kasiski) broke it in the 1800s by finding repeating key patterns.",
+  "related_algorithms": [
+    "Hash Functions",
+    "AES",
+    "Encoding Utilities"
+  ],
+  "wikipedia_url": "https://en.wikipedia.org/wiki/Classical_cipher",
+  "search_query": "classical ciphers history cryptography",
+  "ciphers": {
+    "Caesar": {
+      "era": "Ancient Rome ~50 BC",
+      "type": "Substitution - Monoalphabetic"
+    },
+    "Vigenere": {
+      "era": "1553 (Giovan Battista Bellaso)",
+      "type": "Substitution - Polyalphabetic"
+    },
+    "Atbash": {
+      "era": "Ancient Hebrew ~600 BC",
+      "type": "Substitution - Monoalphabetic"
+    },
+    "Affine": {
+      "era": "16th century",
+      "type": "Substitution - Monoalphabetic"
+    },
+    "Playfair": {
+      "era": "1854 (Charles Wheatstone)",
+      "type": "Substitution - Polygraphic"
+    },
+    "Railfence": {
+      "era": "American Civil War",
+      "type": "Transposition"
+    },
+    "Scytale": {
+      "era": "Ancient Sparta ~700 BC",
+      "type": "Transposition"
+    }
+  }
+}

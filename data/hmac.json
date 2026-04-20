@@ -1,0 +1,22 @@
+{
+  "id": "hmac",
+  "name": "HMAC",
+  "category": "Authentication",
+  "introduced": 1996,
+  "creator": "Mihir Bellare, Ran Canetti, Hugo Krawczyk",
+  "strength": "secure",
+  "breakability": "No practical attack when using SHA-256 or stronger.",
+  "modern_use": "API authentication, JWT signatures, TLS record authentication, cookie validation",
+  "description": "HMAC (Hash-based Message Authentication Code) uses a secret key combined with a hash function to produce a MAC. Unlike a plain hash, it requires the secret key to verify, protecting against both tampering and forgery. Formula: HMAC(K, m) = H((K XOR opad) || H((K XOR ipad) || m))",
+  "key_sizes": [
+    "Any length (recommended: same size as hash output)"
+  ],
+  "notes": "Always use constant-time comparison when verifying HMACs to prevent timing attacks.",
+  "did_you_know": "HMAC-SHA256 is used as the signing algorithm in AWS Signature Version 4, authenticating every API request to AWS services.",
+  "related_algorithms": [
+    "Hash Functions",
+    "Fernet"
+  ],
+  "wikipedia_url": "https://en.wikipedia.org/wiki/HMAC",
+  "search_query": "HMAC message authentication code"
+}

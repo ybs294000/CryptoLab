@@ -1,0 +1,22 @@
+{
+  "id": "encoding",
+  "name": "Encoding Utilities",
+  "category": "Encoding",
+  "introduced": "Various",
+  "creator": "Various standards bodies",
+  "strength": "none",
+  "breakability": "Fully reversible - not encryption.",
+  "modern_use": "Data transport, binary-to-text conversion, URL parameters, email attachments (MIME)",
+  "description": "Encoding transforms data into a different representation for transport or storage compatibility. It is NOT encryption - anyone can decode it. Base64 encodes binary data as ASCII text. Hex represents bytes as hexadecimal digits. URL encoding escapes special characters in URLs.",
+  "key_sizes": [
+    "N/A - no keys involved"
+  ],
+  "notes": "Base64 increases data size by ~33%. Never use encoding as a security measure.",
+  "did_you_know": "Base64 was invented for MIME email attachments in 1987. The alphabet uses A-Z, a-z, 0-9, + and / with = as padding.",
+  "related_algorithms": [
+    "AES",
+    "Hash Functions"
+  ],
+  "wikipedia_url": "https://en.wikipedia.org/wiki/Base64",
+  "search_query": "Base64 encoding binary text"
+}
