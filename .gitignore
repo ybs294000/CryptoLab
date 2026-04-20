@@ -1,0 +1,8 @@
+core/__pycache__
+algorithms/__pycache__
+tabs/__pycache__
+utils/__pycache__
+.streamlit/secrets.toml
+__pycache__
+venv
+.venv
