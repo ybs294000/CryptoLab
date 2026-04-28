@@ -32,20 +32,35 @@ def section_header(title: str, subtitle: str = "") -> None:
         st.caption(subtitle)
 
 
-def success_box(msg: str) -> None:
-    st.success(msg)
+def success_box(msg: str, title: str = "") -> None:
+    notice_box(msg, kind="success", title=title)
 
 
-def error_box(msg: str) -> None:
-    st.error(msg)
+def error_box(msg: str, title: str = "") -> None:
+    notice_box(msg, kind="error", title=title)
 
 
-def warning_box(msg: str) -> None:
-    st.warning(msg)
+def warning_box(msg: str, title: str = "") -> None:
+    notice_box(msg, kind="warning", title=title)
 
 
-def info_box(msg: str) -> None:
-    st.info(msg)
+def info_box(msg: str, title: str = "") -> None:
+    notice_box(msg, kind="info", title=title)
+
+
+def notice_box(msg: str, kind: str = "info", title: str = "") -> None:
+    notice_class = {
+        "info": "notice-info",
+        "warning": "notice-warning",
+        "success": "notice-success",
+        "error": "notice-error",
+    }.get(kind, "notice-info")
+    title_html = f'<div class="notice-title">{_escape_html(title)}</div>' if title else ""
+    body_html = f'<div class="notice-body">{_escape_html(msg)}</div>'
+    st.markdown(
+        f'<div class="notice-block {notice_class}">{title_html}{body_html}</div>',
+        unsafe_allow_html=True,
+    )
 
 
 def copy_button(text: str, label: str = "Copy to clipboard", key: str = "") -> None:

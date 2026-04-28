@@ -1,10 +1,12 @@
 """
-Encoding utilities: Base64, Base32, Hex, URL, Binary.
+Encoding utilities: Base64, Base32, Hex, URL, Binary, and UU.
 All via Python stdlib - not encryption, just encoding.
 """
 
 import base64
 import binascii
+import io
+import uu
 import urllib.parse
 
 ID = "encoding"
@@ -27,6 +29,8 @@ ALGORITHMS = {
     "URL Decode":      "url_dec",
     "Binary Encode":   "bin_enc",
     "Binary Decode":   "bin_dec",
+    "UU Encode":       "uu_enc",
+    "UU Decode":       "uu_dec",
     "ROT13":           "rot13",
 }
 
@@ -73,6 +77,16 @@ def encode(text: str, settings: dict) -> dict:
         elif key == "bin_dec":
             bits = text.strip().replace("\n", " ").split()
             result = "".join(chr(int(b, 2)) for b in bits if len(b) == 8)
+        elif key == "uu_enc":
+            input_buffer = io.BytesIO(text.encode("utf-8"))
+            output_buffer = io.BytesIO()
+            uu.encode(input_buffer, output_buffer, name="cryptolab.txt")
+            result = output_buffer.getvalue().decode("utf-8", errors="replace")
+        elif key == "uu_dec":
+            input_buffer = io.BytesIO(text.encode("utf-8"))
+            output_buffer = io.BytesIO()
+            uu.decode(input_buffer, output_buffer, quiet=True)
+            result = output_buffer.getvalue().decode("utf-8", errors="replace")
         elif key == "rot13":
             import codecs
             result = codecs.encode(text, "rot_13")

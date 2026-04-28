@@ -1,0 +1,24 @@
+{
+  "id": "tripledes",
+  "name": "Triple DES (3DES)",
+  "category": "Legacy Encryption",
+  "introduced": 1978,
+  "creator": "IBM and the wider DES standards ecosystem",
+  "strength": "legacy",
+  "breakability": "Still stronger than single DES, but deprecated for new systems because of age, performance, and block-size limits.",
+  "modern_use": "Older banking, payment, and enterprise systems that have not fully migrated to AES.",
+  "description": "Triple DES applies DES three times to each block to extend the life of the original DES design. It was an important transitional standard, but modern systems should use AES instead.",
+  "key_sizes": [
+    "112-bit effective",
+    "168-bit nominal"
+  ],
+  "notes": "3DES is slow compared with AES and inherits a 64-bit block size that limits safe use on larger data volumes.",
+  "did_you_know": "3DES stayed in regulated environments for years after AES was standardized because replacing entrenched payment infrastructure took a long time.",
+  "related_algorithms": [
+    "AES",
+    "Blowfish",
+    "DES"
+  ],
+  "wikipedia_url": "https://en.wikipedia.org/wiki/Triple_DES",
+  "search_query": "Triple DES 3DES encryption algorithm cryptography"
+}

@@ -9,6 +9,7 @@ from core.registry import get_all, get_by_name
 from core.engine import run_operation, get_default_operation
 from utils.validators import validate_text_input
 from utils.text_tools import entropy_estimate
+from utils.ui_helpers import error_box
 
 
 STRENGTH_COLOR = {
@@ -54,12 +55,18 @@ def render() -> None:
         key="compare_select",
     )
 
+    compare_signature = (input_text, tuple(selected))
+    previous_signature = st.session_state.get("compare_signature")
+    if previous_signature != compare_signature:
+        st.session_state.pop("compare_results", None)
+        st.session_state["compare_signature"] = compare_signature
+
     if run_all:
         if not input_text or not input_text.strip():
-            st.error("Please enter input text.")
+            error_box("Please enter input text.", title="Input Required")
             return
         if not selected:
-            st.error("Please select at least one algorithm.")
+            error_box("Please select at least one algorithm.", title="Selection Required")
             return
 
         results = []
@@ -192,15 +199,13 @@ def render() -> None:
 
         # Export
         st.markdown("---")
-        if st.button(":material/download: Export Comparison as JSON", key="compare_export"):
-            import json
-            export_data = [
-                {k: v for k, v in r.items()} for r in results
-            ]
-            st.download_button(
-                "Download JSON",
-                data=json.dumps(export_data, indent=2),
-                file_name="cryptolab_comparison.json",
-                mime="application/json",
-                key="compare_download",
-            )
+        import json
+
+        export_data = [{k: v for k, v in r.items()} for r in results]
+        st.download_button(
+            ":material/download: Export Comparison as JSON",
+            data=json.dumps(export_data, indent=2),
+            file_name="cryptolab_comparison.json",
+            mime="application/json",
+            key=f"compare_download_{len(results)}",
+        )

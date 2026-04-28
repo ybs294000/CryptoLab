@@ -1,0 +1,23 @@
+{
+  "id": "blowfish",
+  "name": "Blowfish",
+  "category": "Legacy Encryption",
+  "introduced": 1993,
+  "creator": "Bruce Schneier",
+  "strength": "legacy",
+  "breakability": "No practical break of the full cipher is known, but it is considered outdated for new systems.",
+  "modern_use": "Legacy software, older storage systems, and historical interoperability cases.",
+  "description": "Blowfish is a symmetric block cipher designed as a fast, license-free alternative to older standards. It uses a 64-bit block size, which is the main reason it is no longer recommended for new designs.",
+  "key_sizes": [
+    "32-bit to 448-bit"
+  ],
+  "notes": "The small 64-bit block size makes Blowfish a poor fit for modern high-volume encryption. AES is the preferred replacement.",
+  "did_you_know": "Blowfish was once widely used in security tools because it was fast, public, and free to implement.",
+  "related_algorithms": [
+    "AES",
+    "Triple DES",
+    "ChaCha20-Poly1305"
+  ],
+  "wikipedia_url": "https://en.wikipedia.org/wiki/Blowfish_(cipher)",
+  "search_query": "Blowfish encryption algorithm cryptography"
+}

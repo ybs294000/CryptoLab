@@ -6,3 +6,6 @@ utils/__pycache__
 __pycache__
 venv
 .venv
+a_tmp/
+tmp/
+tests/__pycache__/

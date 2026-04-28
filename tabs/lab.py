@@ -2,13 +2,14 @@
 Lab tab - main working area for algorithm operations.
 """
 
+import json
 import streamlit as st
 import time
 from core.registry import get_all, get_by_category, get_by_name
 from core.engine import run_operation, get_available_operations, get_default_operation
 from utils.validators import validate_text_input
 from utils.text_tools import entropy_estimate, char_frequencies
-from utils.ui_helpers import pipeline_viz, error_box, success_box, warning_box
+from utils.ui_helpers import pipeline_viz, error_box, success_box, warning_box, info_box, show_output_box
 
 
 STRENGTH_COLOR = {
@@ -28,6 +29,37 @@ OP_LABELS = {
     "encode":   "Encode / Decode",
     "generate": "Generate",
 }
+
+
+def _clear_lab_state() -> None:
+    """Reset the lab input and any result tied to the current run."""
+    st.session_state["lab_input"] = ""
+    st.session_state.pop("lab_result", None)
+    st.session_state.pop("lab_result_algo", None)
+    st.session_state.pop("lab_result_op", None)
+    st.session_state.pop("lab_result_context", None)
+    st.session_state.pop("lab_result_signature", None)
+
+
+def _jump_to_lab_algorithm(algorithm_name: str) -> None:
+    """Switch the active lab algorithm without leaving stale output behind."""
+    st.session_state["lab_algo_select"] = algorithm_name
+
+
+def _make_lab_result_signature(
+    selected_name: str,
+    operation: str,
+    input_text: str,
+    settings: dict,
+) -> str:
+    """Create a stable signature for the current lab form state."""
+    payload = {
+        "algorithm": selected_name,
+        "operation": operation,
+        "input_text": (input_text or "").strip(),
+        "settings": settings,
+    }
+    return json.dumps(payload, sort_keys=True, default=str)
 
 
 def _get_settings_panel(algo_entry: dict, operation: str) -> dict:
@@ -219,7 +251,10 @@ def _get_settings_panel(algo_entry: dict, operation: str) -> dict:
 
         # Playfair note
         if selected_cipher == "Playfair":
-            st.info("Playfair: J is treated as I. Double letters are separated with X. Output may be slightly longer than input.")
+            info_box(
+                "Playfair treats J as I. Double letters are separated with X. The output may be slightly longer than the original input.",
+                title="Playfair Note",
+            )
 
         # Fill defaults for unused key fields
         settings.setdefault("int_key", 3)
@@ -294,7 +329,7 @@ def render() -> None:
         all_algos = [a for a in all_algos if sq in a["name"].lower() or sq in a["description"].lower()]
 
     if not all_algos:
-        st.warning("No algorithms match your filter.")
+        warning_box("No algorithms match your filter.", title="No Matching Algorithms")
         return
 
     algo_names = [a["name"] for a in all_algos]
@@ -344,9 +379,15 @@ def render() -> None:
     )
 
     if strength in ("legacy", "weak"):
-        st.warning(f":material/warning: {algo_entry['name']} is marked {strength.upper()}. Do not use in new systems.")
+        warning_box(
+            f"{algo_entry['name']} is marked {strength.upper()}. Do not use it in new systems.",
+            title="Security Warning",
+        )
     if strength == "historical":
-        st.warning(f":material/history_edu: {algo_entry['name']} contains historical ciphers. All are broken and provide zero modern security. Educational use only.")
+        warning_box(
+            f"{algo_entry['name']} contains historical ciphers. All are broken and provide no modern security. Use them only for learning.",
+            title="Educational Only",
+        )
 
     # Operation selector
     ops = get_available_operations(algo_entry)
@@ -378,11 +419,13 @@ def render() -> None:
         with run_col:
             run = st.button(":material/play_arrow: Run", type="primary", key="lab_run")
         with clear_col:
-            if st.button(":material/delete: Clear", key="lab_clear"):
-                st.session_state["lab_input"] = ""
-                if "lab_result" in st.session_state:
-                    del st.session_state["lab_result"]
-                st.rerun()
+            st.button(
+                ":material/delete: Clear",
+                key="lab_clear",
+                on_click=_clear_lab_state,
+            )
+
+    current_signature = _make_lab_result_signature(selected_name, operation, input_text, settings)
 
     # --- Run ---
     if run:
@@ -408,6 +451,13 @@ def render() -> None:
         st.session_state["lab_result"] = result
         st.session_state["lab_result_algo"] = selected_name
         st.session_state["lab_result_op"] = operation
+        st.session_state["lab_result_context"] = {
+            "algorithm": selected_name,
+            "operation": operation,
+            "input_text": text,
+            "settings": dict(settings),
+        }
+        st.session_state["lab_result_signature"] = current_signature
 
         # Update recents
         recent = st.session_state.get("recent", [])
@@ -429,23 +479,40 @@ def render() -> None:
         st.session_state["history"] = st.session_state["history"][:50]
 
     # --- Output ---
-    if "lab_result" in st.session_state:
+    stored_context = st.session_state.get("lab_result_context", {})
+    stored_algo_name = stored_context.get("algorithm", st.session_state.get("lab_result_algo"))
+    stored_operation = stored_context.get("operation", st.session_state.get("lab_result_op"))
+    stored_input_text = stored_context.get("input_text", "")
+    stored_settings = stored_context.get("settings", {})
+    stored_algo_entry = get_by_name(stored_algo_name) if stored_algo_name else None
+    result_is_stale = st.session_state.get("lab_result_signature") != current_signature
+
+    if "lab_result" in st.session_state and stored_algo_entry is not None and stored_operation:
         result = st.session_state["lab_result"]
         st.markdown("---")
         st.markdown("**Output**")
+
+        if result_is_stale:
+            warning_box(
+                f"You changed the controls after the last run. The output below still reflects {stored_algo_name} in {OP_LABELS.get(stored_operation, stored_operation)} mode until you run again.",
+                title="Showing Last Run",
+            )
+        st.caption(
+            f"Last run: {stored_algo_name} | {OP_LABELS.get(stored_operation, stored_operation)}"
+        )
 
         if "error" in result:
             error_box(result["error"])
         else:
             output = result.get("output", "")
-            st.text_area("Result", value=output, height=120, key="lab_output_area", label_visibility="collapsed")
+            show_output_box("Result", output)
 
             dl_col, info_col = st.columns([1, 2])
             with dl_col:
                 st.download_button(
                     ":material/download: Download",
                     data=output.encode("utf-8"),
-                    file_name=f"cryptolab_{selected_name.lower().replace(' ', '_')}.txt",
+                    file_name=f"cryptolab_{stored_algo_name.lower().replace(' ', '_')}.txt",
                     mime="text/plain",
                     key="lab_download",
                 )
@@ -454,20 +521,20 @@ def render() -> None:
                 elapsed = result.get("elapsed_ms", 0)
                 st.caption(f"Completed in {elapsed} ms | Output: {len(output)} chars")
                 if result.get("info"):
-                    st.info(result["info"])
+                    info_box(result["info"], title="Operation Details")
                 if result.get("key_used"):
                     with st.expander("Key used (save this)"):
                         st.code(result["key_used"])
 
             # Visualization
-            if algo_entry["supports_viz"]:
+            if stored_algo_entry.get("supports_viz"):
                 with st.expander(":material/visibility: Transformation Pipeline"):
-                    _render_visualization(algo_entry, input_text or "", settings)
+                    _render_visualization(stored_algo_entry, stored_input_text or "", stored_settings)
 
             # Hash-specific extras
-            if algo_entry["id"] == "hash" and output:
+            if stored_algo_entry["id"] == "hash" and output:
                 with st.expander(":material/bar_chart: Hash Size Comparison"):
-                    _render_hash_comparison_chart(input_text or "")
+                    _render_hash_comparison_chart(stored_input_text or "")
 
                 # Entropy
                 try:
@@ -483,10 +550,13 @@ def render() -> None:
             st.markdown("---")
             st.markdown("**Saved Algorithms**")
             for f in favs:
-                if st.button(f, key=f"fav_jump_{f}"):
-                    if f in algo_names:
-                        st.session_state["lab_algo_select"] = algo_names.index(f)
-                        st.rerun()
+                if f in algo_names:
+                    st.button(
+                        f,
+                        key=f"fav_jump_{f}",
+                        on_click=_jump_to_lab_algorithm,
+                        args=(f,),
+                    )
 
     recent_list = st.session_state.get("recent", [])
     if len(recent_list) > 1:

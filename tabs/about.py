@@ -1,16 +1,17 @@
 """
-About tab - project info, tech stack, how to extend.
+User-facing About tab.
 """
 
 import streamlit as st
+
 from core.registry import get_all, get_by_category
+from utils.branding import render_brand_header
+from utils.ui_helpers import info_box, warning_box
 
 APP_VERSION = "1.1.0"
 
 
-def render() -> None:
-    st.markdown("### About CryptoLab")
-
+def _metric_row() -> None:
     all_algos = get_all()
     cats = get_by_category()
 
@@ -20,141 +21,208 @@ def render() -> None:
     col3.metric("Categories", len(cats))
     col4.metric("License", "MIT")
 
-    st.markdown("---")
 
-    st.markdown("""
-CryptoLab is an educational cryptography platform built with Streamlit. It provides
-a hands-on interface to experiment with real cryptographic algorithms using reputable
-Python libraries.
-
-**Purpose**: Learn how cryptographic algorithms work by using them directly.
-Every operation uses production-quality or well-vetted library code.
-No algorithms are hand-implemented from scratch.
-
-The platform spans the full history of cryptography - from Ancient Rome's Caesar
-cipher through WW2-era Enigma precursors, to modern authenticated encryption
-like AES-256-GCM and ChaCha20-Poly1305.
-""")
-
-    st.markdown("---")
-    st.markdown("### Algorithm Coverage")
-
+def _category_cards() -> None:
+    st.markdown("### :material/explore: What You Can Explore")
+    cats = get_by_category()
     for cat_name, entries in cats.items():
         names = ", ".join(e["name"] for e in entries)
-        st.markdown(f"**{cat_name}** — {names}")
+        st.markdown(
+            f"""
+<div class="crypto-card">
+  <div style="font-size:16px;font-weight:700;margin-bottom:6px;">{cat_name}</div>
+  <div style="color:#9CA6B5;font-size:13px;line-height:1.55;">{names}</div>
+</div>
+""",
+            unsafe_allow_html=True,
+        )
+
+
+def _journey_cards() -> None:
+    cards = [
+        (
+            "Lab",
+            "Experiment with one algorithm at a time, adjust settings, and inspect the output closely.",
+        ),
+        (
+            "Batch",
+            "Process text files or protect images and documents with authenticated encryption.",
+        ),
+        (
+            "Compare",
+            "See how multiple algorithms behave on the same input, including output size and timing.",
+        ),
+        (
+            "Learn",
+            "Read clear explanations, historical context, and practical guidance on what is secure today.",
+        ),
+    ]
+
+    st.markdown("### :material/near_me: Where To Start")
+    first_row = st.columns(2)
+    second_row = st.columns(2)
+    all_columns = [first_row[0], first_row[1], second_row[0], second_row[1]]
+
+    for col, (title, body) in zip(all_columns, cards):
+        with col:
+            st.markdown(
+                f"""
+<div class="crypto-card feature-card-blue" style="min-height:120px;">
+  <div style="font-size:18px;font-weight:700;margin-bottom:10px;">{title}</div>
+  <div style="color:var(--text-muted);font-size:14px;line-height:1.65;">{body}</div>
+</div>
+""",
+                unsafe_allow_html=True,
+            )
+
+
+def _technical_details() -> None:
+    st.markdown("### :material/description: Technical Details")
+    st.caption("A plain-language view of how the app is put together and how to work with it.")
+
+    st.markdown("""
+**How the app is organized**
+
+- app.py sets up the page shell and routes each top-level tab.
+- The tabs folder contains the user workflows such as Lab, Compare, Batch, Learn, History, and About.
+- The core registry keeps the catalog of algorithm modules.
+- The core engine dispatches the selected operation to the chosen algorithm.
+- The data folder stores educational metadata used in the Learn tab.
+- The utils folder contains styling, branding, validation, and file helpers.
+""")
+
+
+def _technology_stack() -> None:
+    st.markdown("### :material/developer_board: Technologies And Frameworks")
+    st.markdown("""
+- **Streamlit** powers the app interface and session-driven workflow.
+- **PyCryptodome** provides AES and ChaCha20-Poly1305 implementations.
+- **cryptography** provides Fernet and related secure primitives.
+- **Plotly** is used for comparison charts and visual explainers.
+- **pycipher** and **secretpy** provide the historical and classical cipher implementations.
+- **Python standard library** supports encoding tools, file packaging, and utility flows.
+""")
+
+
+def _limitations() -> None:
+    st.markdown("### :material/report_problem: Current Limitations")
+    st.markdown("""
+- Maximum text input and upload size is limited to 512 KB in the current configuration.
+- Results and history are stored only for the active session and are not saved permanently.
+- Classical ciphers operate on letters and are included for learning, not real protection.
+- RSA is available for text experimentation, but not for bulk file workflows.
+- The secure file workflow protects one file at a time and exports it into a CryptoLab package rather than the original file format.
+""")
+
+
+def _guide() -> None:
+    st.markdown("### :material/menu_book: Quick Guide")
+    st.markdown("""
+1. Start in **Lab** when you want to try one algorithm with full control over settings.
+2. Use **Compare** to see how different algorithms behave on the same input.
+3. Use **Batch** for text files or for encrypting and decrypting images and business documents.
+4. Use **Learn** when you want plain-language explanations before choosing an algorithm.
+5. Save any generated encryption key immediately, because decryption depends on that exact key.
+""")
+
+
+def _faq() -> None:
+    st.markdown("### :material/live_help: FAQ")
+    with st.expander(":material/key: Why do I need to save the generated key?"):
+        st.markdown("Auto-generated keys are unique to that encryption run. Without the same key, decryption is not possible later.")
+    with st.expander(":material/code: Is encoding the same as encryption?"):
+        st.markdown("No. Encoding only changes representation for transport or storage. It does not provide security.")
+    with st.expander(":material/folder_managed: Why is a protected file downloaded as a `.cryptolab` package?"):
+        st.markdown("The package preserves the encrypted content plus the metadata needed to restore the original file name, type, and required decryption settings.")
+    with st.expander(":material/history: Why does the app keep showing my previous output in Lab?"):
+        st.markdown("The Lab tab keeps the last successful run visible so you can compare what changed before deciding to run again. Once you press Run, the output updates to the new state.")
+
+    st.markdown("""
+**How algorithms are added**
+
+Each algorithm family lives in its own module under the algorithms folder. The app looks for standard fields such as the algorithm name, category, strength label, and supported operations. Once a module is registered, it becomes available across the app automatically.
+""")
+
+    st.markdown("""
+**How file protection works**
+
+The secure file workflow in the Batch tab uses authenticated encryption so the app can detect tampering during decryption. Encrypted files are exported as CryptoLab secure packages, which preserve the original filename and media type for later restoration.
+""")
+
+    st.markdown("""
+**Quality checks**
+
+CryptoLab includes automated tests for registry loading, helper utilities, and secure file roundtrips for AES-GCM, ChaCha20-Poly1305, and Fernet. A markdown test report is generated in tests/TEST_REPORT.md when the suite is run.
+""")
+
+    st.markdown("""
+**Where to look next**
+
+- README.md for the current overview and setup instructions
+- CHANGELOG.md for the latest feature summary
+- docs/TESTING.md for the test workflow
+- docs/THEMING.md for the visual system and theme files
+""")
+
+
+def render() -> None:
+    render_brand_header(
+        "About CryptoLab",
+        "A practical workspace for learning encryption, hashing, encoding, authentication, and secure file protection.",
+        compact=True,
+    )
+
+    _metric_row()
 
     st.markdown("---")
-    st.markdown("### Tech Stack")
+    st.markdown("""
+### :material/info: What CryptoLab Is
 
-    col_a, col_b = st.columns(2)
-    with col_a:
-        st.markdown("""
-**UI Framework**
-- Streamlit >= 1.35
+CryptoLab is built to help you understand cryptography by trying it yourself. You can encrypt messages, compare algorithms, inspect outputs, process text files in bulk, and now protect common files such as images and documents with authenticated encryption.
 
-**Modern Cryptography**
-- `cryptography` - Fernet, AES-GCM
-- `pycryptodome` - AES, ChaCha20-Poly1305, Blowfish, 3DES, RSA-OAEP
-- `hashlib` (stdlib) - SHA-1/2/3 family, BLAKE2, MD5
-- `hmac` (stdlib) - HMAC-SHA256/512
-- `secrets` (stdlib) - Cryptographically secure tokens
-- `base64`, `binascii`, `urllib.parse` (stdlib) - Encoding
-""")
-    with col_b:
-        st.markdown("""
-**Classical Ciphers (Educational)**
-- `pycipher` - Caesar, Vigenere, Atbash, Affine, ROT13,
-  Beaufort, Autokey, Gronsfeld, Playfair, Bifid,
-  Railfence, Simple Substitution
-- `secretpy` - Scytale, Keyword Substitution
-
-**Visualization**
-- Plotly - timing charts, entropy, output size comparison
-
-**Architecture**
-- Modular algorithm plugin system
-- JSON-driven metadata / Learn tab
-- Central registry + engine dispatcher
-- Session-state history tracking
+The app keeps educational breadth without losing practicality. It includes modern algorithms you would use in real systems, legacy algorithms you may still encounter, and historical ciphers so the security differences are easy to see.
 """)
 
     st.markdown("---")
-    st.markdown("### How to Add an Algorithm")
+    _journey_cards()
 
-    with st.expander("Plugin Development Guide"):
-        st.markdown("""
-Each algorithm is a standalone Python module in the `algorithms/` directory.
+    st.markdown("---")
+    _category_cards()
 
-**1. Create `algorithms/my_algo.py`**
-
-Your module should expose:
-
-```python
-ID = "my_algo"
-NAME = "My Algorithm"
-CATEGORY = "Modern Encryption"
-DESCRIPTION = "Short description."
-STRENGTH = "secure"  # secure | legacy | weak | none | historical
-SUPPORTS_VISUALIZATION = True
-SUPPORTS_BATCH_MODE = True
-TAGS = ["symmetric", "modern"]
-
-def default_settings() -> dict: ...
-def validate_settings(settings: dict) -> tuple[bool, str]: ...
-
-# Implement the operations you support:
-def encrypt(plaintext: str, settings: dict) -> dict: ...
-def decrypt(ciphertext: str, settings: dict) -> dict: ...
-# or hash_text / encode / generate / compute_hmac
-
-# Optional - for pipeline visualization:
-def get_visualization_steps(plaintext: str, settings: dict) -> list[tuple[str, str]]: ...
-```
-
-**2. Register it in `core/registry.py`**
-
-Add the import path to the `imports` list in `_build_registry()`.
-
-**3. Add metadata (optional)**
-
-Create `data/my_algo.json` with id, name, category, description, notes, did_you_know, wikipedia_url fields.
-
-**4. Add settings UI (optional)**
-
-Add an `elif algo_entry["id"] == "my_algo":` block in `_get_settings_panel()` in `tabs/lab.py`.
-Otherwise the algorithm runs with `default_settings()`.
+    st.markdown("---")
+    st.markdown("### :material/gpp_good: Security Guidance")
+    warning_box(
+        "Use modern authenticated encryption for real files and sensitive data. In this app, the safest choices are AES-GCM, ChaCha20-Poly1305, and Fernet.",
+        title="Recommended For Real Use",
+    )
+    st.markdown("""
+- Algorithms marked `LEGACY` are still useful to study, but should not be chosen for new systems.
+- Algorithms marked `WEAK` are included so you can understand why they fell out of use.
+- Encoding tools are for representation and transport, not security.
+- Historical ciphers are for learning only and do not provide meaningful protection.
 """)
 
     st.markdown("---")
-    st.markdown("### Design Principles")
-
-    with st.expander("Implementation Rules"):
-        st.markdown("""
-- **No hand-rolled crypto**: Every algorithm uses a reputable library.
-  Modern ciphers use `cryptography`/`pycryptodome`. Classical ciphers use `pycipher`/`secretpy`.
-- **Graceful degradation**: If a library is unavailable the algorithm is skipped - the app keeps running.
-- **Authenticated encryption by default**: Where possible, AEAD modes (GCM, EAX, Poly1305) are the default.
-- **Clear strength labeling**: Legacy, weak, and historical algorithms are prominently marked. No security theater.
-- **Educational honesty**: Classical ciphers are shown as historical/broken, never as secure alternatives.
-- **Roundtrip verified**: All encrypt/decrypt pairs are unit-tested before release.
-""")
-
-    with st.expander("Classical vs Modern Ciphers"):
-        st.markdown("""
-CryptoLab includes both classical (historical) and modern ciphers. They serve very different purposes:
-
-| | Classical | Modern |
-|---|---|---|
-| Era | 50 BC - 1940s | 1970s - present |
-| Security | Broken | Secure |
-| Key space | Tiny (Caesar: 25 keys) | Vast (AES-256: 2^256 keys) |
-| Attack | Frequency analysis, pen+paper | Requires nation-state compute (if any) |
-| Use today | Education, puzzles, CTF | TLS, disk encryption, VPNs |
-
-The classical ciphers are included to illustrate how cryptography evolved and why modern algorithms were needed.
+    st.markdown("### :material/privacy_tip: Privacy And Handling")
+    st.markdown("""
+- Operations run locally in your Streamlit session.
+- Temporary results stay in session state until you clear or refresh the app.
+- If a key is auto-generated for encryption, you need to save it to decrypt later.
+- File decryption in the secure file workflow restores the original filename and file type when available.
 """)
 
     st.markdown("---")
-    st.markdown("### Run Command")
-    st.code("streamlit run app.py", language="bash")
-    st.caption("Requires Python 3.10+ and the packages in requirements.txt")
+    _technology_stack()
+
+    st.markdown("---")
+    _limitations()
+
+    st.markdown("---")
+    _guide()
+
+    st.markdown("---")
+    _faq()
+
+    st.markdown("---")
+    with st.expander(":material/description: Technical Details"):
+        _technical_details()

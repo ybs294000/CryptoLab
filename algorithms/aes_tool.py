@@ -38,8 +38,18 @@ def validate_settings(settings: dict) -> tuple[bool, str]:
     key = settings.get("key", "").strip()
     key_size = settings.get("key_size", "AES-256")
     required = KEY_SIZES.get(key_size, 32)
-    if key and len(key.encode()) != required:
-        return False, f"{key_size} requires exactly {required} bytes ({required} ASCII characters)."
+    if key:
+        try:
+            decoded = base64.b64decode(key)
+            if len(decoded) == required:
+                return True, ""
+        except Exception:
+            pass
+        if len(key.encode()) != required:
+            return False, (
+                f"{key_size} requires either exactly {required} ASCII characters "
+                f"or the base64 key shown by CryptoLab."
+            )
     return True, ""
 
 
@@ -63,11 +73,10 @@ def _derive_key(settings: dict) -> bytes:
     return kb[:required]
 
 
-def encrypt(plaintext: str, settings: dict) -> dict:
+def encrypt_bytes(data: bytes, settings: dict) -> dict:
     try:
         key = _derive_key(settings)
         mode_name = settings.get("mode", "GCM")
-        data = plaintext.encode("utf-8")
 
         if mode_name == "GCM":
             cipher = AES.new(key, AES.MODE_GCM)
@@ -92,13 +101,17 @@ def encrypt(plaintext: str, settings: dict) -> dict:
             "output": encoded,
             "key_used": base64.b64encode(key).decode(),
             "mode": mode_name,
+            "package_settings": {
+                "mode": mode_name,
+                "key_size": settings.get("key_size", "AES-256"),
+            },
             "info": f"Key: {base64.b64encode(key).decode()}  (save this to decrypt)",
         }
     except Exception as e:
         return {"error": f"AES encrypt failed: {e}"}
 
 
-def decrypt(ciphertext_b64: str, settings: dict) -> dict:
+def decrypt_bytes(ciphertext_b64: str, settings: dict) -> dict:
     try:
         key = _derive_key(settings)
         mode_name = settings.get("mode", "GCM")
@@ -123,9 +136,20 @@ def decrypt(ciphertext_b64: str, settings: dict) -> dict:
             cipher = AES.new(key, AES.MODE_CBC, iv=iv)
             plaintext = unpad(cipher.decrypt(ct), AES.block_size)
 
-        return {"output": plaintext.decode("utf-8")}
+        return {"output_bytes": plaintext}
     except Exception as e:
         return {"error": f"AES decrypt failed: {e}. Check your key and mode."}
+
+
+def encrypt(plaintext: str, settings: dict) -> dict:
+    return encrypt_bytes(plaintext.encode("utf-8"), settings)
+
+
+def decrypt(ciphertext_b64: str, settings: dict) -> dict:
+    result = decrypt_bytes(ciphertext_b64, settings)
+    if "error" in result:
+        return result
+    return {"output": result["output_bytes"].decode("utf-8")}
 
 
 def get_visualization_steps(plaintext: str, settings: dict) -> list:

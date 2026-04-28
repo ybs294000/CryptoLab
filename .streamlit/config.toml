@@ -1,26 +1,51 @@
-[theme.light]
-base = "light"
-primaryColor = "#1A73E8"
-backgroundColor = "#F8F9FA"
-secondaryBackgroundColor = "#FFFFFF"
-textColor = "#202124"
-font = "sans serif"
-
-[theme.dark]
-base = "dark"
-primaryColor = "#4FA3E0"
-backgroundColor = "#0F1117"
-secondaryBackgroundColor = "#1A1D27"
-textColor = "#E8EAED"
-font = "sans serif"
+[browser]
+gatherUsageStats = false
 
 [server]
 headless = true
 enableCORS = false
 enableXsrfProtection = true
 
-[browser]
-gatherUsageStats = false
-
 [runner]
 fastReruns = true
+
+[theme]
+base = "dark"
+font = "sans serif"
+baseRadius = "md"
+buttonRadius = "md"
+showWidgetBorder = true
+showSidebarBorder = true
+chartCategoricalColors = [
+  "#4F8EF7",
+  "#38BDF8",
+  "#34D399",
+  "#A78BFA",
+  "#F59E0B",
+  "#FB923C",
+  "#F472B6",
+  "#22D3EE",
+]
+
+[theme.dark]
+base = "dark"
+primaryColor = "#3E7DE0"
+backgroundColor = "#0C1118"
+secondaryBackgroundColor = "#141A22"
+textColor = "#E6EAF0"
+linkColor = "#4F8EF7"
+borderColor = "#283142"
+dataframeHeaderBackgroundColor = "#141A22"
+greenColor = "#22C55E"
+orangeColor = "#F59E0B"
+redColor = "#EF4444"
+blueColor = "#4F8EF7"
+violetColor = "#A78BFA"
+yellowColor = "#F59E0B"
+grayColor = "#9CA6B5"
+
+[theme.dark.sidebar]
+backgroundColor = "#141A22"
+secondaryBackgroundColor = "#1B2230"
+borderColor = "#283142"
+primaryColor = "#4F8EF7"

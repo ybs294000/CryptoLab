@@ -5,6 +5,8 @@ Home tab - intro, categories, quickstart, did-you-know facts.
 import streamlit as st
 from core.registry import get_by_category, get_all
 from core.metadata import load_all_metadata
+from utils.branding import render_brand_header
+from utils.ui_helpers import info_box, warning_box
 import random
 
 
@@ -49,19 +51,22 @@ DID_YOU_KNOW = [
 
 
 def render() -> None:
-    # Hero
-    st.markdown("""
-<div style="text-align:center;padding:32px 0 20px 0;">
-  <h1 style="font-size:2.6rem;margin-bottom:6px;">CryptoLab</h1>
-  <p style="color:#9CA6B5;font-size:1.1rem;max-width:560px;margin:0 auto;">
-    An interactive cryptography learning platform. Experiment with real library-backed
-    algorithms, visualize transformations, and understand the difference between
-    encoding, hashing, and encryption.
-  </p>
-</div>
-""", unsafe_allow_html=True)
+    render_brand_header(
+        "CryptoLab",
+        "Interactive cryptography lab for secure algorithms, historical ciphers, and hands-on learning.",
+    )
 
-    st.markdown("---")
+    st.markdown(
+        """
+<div class="soft-panel subtle-grid" style="margin-bottom:16px;">
+  <div style="font-size:1.08rem;font-weight:700;margin-bottom:6px;">Built for clear experimentation</div>
+  <div style="color:var(--text-muted);font-size:14px;line-height:1.65;">
+    Try modern encryption, compare outputs, inspect transformations, and protect common files without losing sight of what is educational and what is safe for real use.
+  </div>
+</div>
+""",
+        unsafe_allow_html=True,
+    )
 
     # Stats row
     all_algos = get_all()
@@ -76,12 +81,12 @@ def render() -> None:
 
     # Did you know
     fact = random.choice(DID_YOU_KNOW)
-    st.info(f"**Did you know?**  {fact}")
+    info_box(fact, title="Did You Know?")
 
     st.markdown("---")
 
     # Category overview
-    st.markdown("### Available Categories")
+    st.markdown("### :material/dashboard: Available Categories")
     for cat_name, entries in cats.items():
         icon = CAT_ICONS.get(cat_name, "category")
         with st.expander(f":material/{icon}: {cat_name}  ({len(entries)} algorithms)"):
@@ -98,7 +103,7 @@ def render() -> None:
     st.markdown("---")
 
     # Quick start guide
-    st.markdown("### Quick Start")
+    st.markdown("### :material/rocket_launch: Quick Start")
     col1, col2 = st.columns(2)
     with col1:
         st.markdown("""
@@ -132,14 +137,7 @@ def render() -> None:
     st.markdown("---")
 
     # Educational disclaimer
-    st.markdown("""
-<div style="background:#141A22;border:1px solid #283142;border-radius:8px;padding:16px 20px;">
-  <b style="color:#4F8EF7;">Educational Disclaimer</b><br>
-  <span style="color:#9CA6B5;font-size:13px;">
-  CryptoLab uses real, library-backed cryptographic algorithms for educational purposes.
-  All operations use reputable Python libraries (cryptography, pycryptodome, hashlib).
-  Do not use this tool as a substitute for professional security review.
-  Algorithms marked LEGACY or WEAK should not be used in new systems.
-  </span>
-</div>
-""", unsafe_allow_html=True)
+    warning_box(
+        "CryptoLab uses real, library-backed cryptographic algorithms for educational purposes. It is a practical learning tool, but it is not a substitute for architecture review, key management policy, or production security testing.",
+        title="Educational Disclaimer",
+    )

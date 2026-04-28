@@ -47,32 +47,44 @@ def _get_fernet(settings: dict) -> tuple[Fernet | None, str]:
         return None, str(e)
 
 
-def encrypt(plaintext: str, settings: dict) -> dict:
+def encrypt_bytes(data: bytes, settings: dict) -> dict:
     try:
         f, key_used = _get_fernet(settings)
         if f is None:
             return {"error": f"Key error: {key_used}"}
-        token = f.encrypt(plaintext.encode("utf-8"))
+        token = f.encrypt(data)
         return {
             "output": token.decode(),
             "key_used": key_used,
+            "package_settings": {},
             "info": f"Key used: {key_used}  (save to decrypt)",
         }
     except Exception as e:
         return {"error": f"Fernet encrypt failed: {e}"}
 
 
-def decrypt(token: str, settings: dict) -> dict:
+def decrypt_bytes(token: str, settings: dict) -> dict:
     try:
         f, _ = _get_fernet(settings)
         if f is None:
             return {"error": "Invalid key."}
         plaintext = f.decrypt(token.strip().encode())
-        return {"output": plaintext.decode("utf-8")}
+        return {"output_bytes": plaintext}
     except InvalidToken:
         return {"error": "Decryption failed: invalid token or wrong key."}
     except Exception as e:
         return {"error": f"Fernet decrypt failed: {e}"}
+
+
+def encrypt(plaintext: str, settings: dict) -> dict:
+    return encrypt_bytes(plaintext.encode("utf-8"), settings)
+
+
+def decrypt(token: str, settings: dict) -> dict:
+    result = decrypt_bytes(token, settings)
+    if "error" in result:
+        return result
+    return {"output": result["output_bytes"].decode("utf-8")}
 
 
 def get_visualization_steps(plaintext: str, settings: dict) -> list:

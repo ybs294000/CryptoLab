@@ -6,6 +6,7 @@ import streamlit as st
 from core.metadata import load_all_metadata, load_metadata
 from core.registry import get_all, get_by_id
 import urllib.parse
+from utils.ui_helpers import info_box
 
 
 STRENGTH_BADGE_HTML = {
@@ -67,12 +68,12 @@ def _render_algo_card(algo_id: str, algo_entry: dict, meta: dict) -> None:
         # Notes
         notes = meta.get("notes", "")
         if notes:
-            st.info(f"**Notes:** {notes}")
+            info_box(notes, title="Notes")
 
         # Did you know
         dyk = meta.get("did_you_know", "")
         if dyk:
-            st.success(f"**Did you know?** {dyk}")
+            info_box(dyk, title="Did You Know?")
 
         # Related algorithms
         related = meta.get("related_algorithms", [])
@@ -81,7 +82,9 @@ def _render_algo_card(algo_id: str, algo_entry: dict, meta: dict) -> None:
 
         # Action buttons
         wiki_url = meta.get("wikipedia_url", "")
-        search_q = meta.get("search_query", algo_entry["name"])
+        search_q = meta.get("search_query")
+        if not search_q:
+            search_q = f"{algo_entry['name']} cryptography algorithm"
         google_url = f"https://www.google.com/search?q={urllib.parse.quote(search_q)}"
 
         btn_col1, btn_col2 = st.columns(2)
@@ -151,7 +154,7 @@ def render() -> None:
         st.markdown("")
 
     if shown == 0:
-        st.info("No algorithms match your search.")
+        info_box("No algorithms match your search.", title="No Results")
 
     # Concepts section
     st.markdown("---")
@@ -246,4 +249,4 @@ Classical ciphers represent thousands of years of cryptographic thinking, ultima
             st.plotly_chart(fig, key="learn_freq_chart")
             st.caption("Any monoalphabetic substitution cipher (Caesar, Affine, Simple Substitution) preserves this distribution in ciphertext, making it trivially breakable.")
         except Exception:
-            st.info("Install plotly to see this chart.")
+            info_box("Install plotly to see this chart.", title="Chart Unavailable")

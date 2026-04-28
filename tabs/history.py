@@ -4,6 +4,7 @@ History tab - shows past operations in this session.
 
 import streamlit as st
 import json
+from utils.ui_helpers import info_box
 
 
 def render() -> None:
@@ -13,7 +14,7 @@ def render() -> None:
     history = st.session_state.get("history", [])
 
     if not history:
-        st.info("No operations yet. Run something in the Lab tab.")
+        info_box("No operations yet. Run something in the Lab tab.", title="History Is Empty")
         return
 
     col1, col2 = st.columns([3, 1])

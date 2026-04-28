@@ -22,8 +22,15 @@ def default_settings() -> dict:
 
 def validate_settings(settings: dict) -> tuple[bool, str]:
     key = settings.get("key", "").strip()
-    if key and len(key.encode()) != 32:
-        return False, "ChaCha20 requires exactly 32 bytes (32 ASCII characters) key."
+    if key:
+        try:
+            decoded = base64.b64decode(key)
+            if len(decoded) == 32:
+                return True, ""
+        except Exception:
+            pass
+        if len(key.encode()) != 32:
+            return False, "ChaCha20 requires either exactly 32 ASCII characters or the base64 key shown by CryptoLab."
     return True, ""
 
 
@@ -58,11 +65,11 @@ def _get_key(settings: dict) -> bytes:
     return (kb + b"\x00" * 32)[:32]
 
 
-def encrypt(plaintext: str, settings: dict) -> dict:
+def encrypt_bytes(data: bytes, settings: dict) -> dict:
     try:
         key = _get_key(settings)
         cipher = ChaCha20_Poly1305.new(key=key)
-        ciphertext, tag = cipher.encrypt_and_digest(plaintext.encode("utf-8"))
+        ciphertext, tag = cipher.encrypt_and_digest(data)
         nonce = cipher.nonce
         combined = nonce + tag + ciphertext
         encoded = base64.b64encode(combined).decode()
@@ -72,13 +79,14 @@ def encrypt(plaintext: str, settings: dict) -> dict:
         return {
             "output": encoded,
             "key_used": key_b64,
+            "package_settings": {},
             "info": f"Key (base64): {key_b64}  (paste into Key field to decrypt)",
         }
     except Exception as e:
         return {"error": f"ChaCha20 encrypt failed: {e}"}
 
 
-def decrypt(ciphertext_b64: str, settings: dict) -> dict:
+def decrypt_bytes(ciphertext_b64: str, settings: dict) -> dict:
     try:
         key = _get_key(settings)
         combined = base64.b64decode(ciphertext_b64.strip())
@@ -87,9 +95,20 @@ def decrypt(ciphertext_b64: str, settings: dict) -> dict:
         ct = combined[28:]
         cipher = ChaCha20_Poly1305.new(key=key, nonce=nonce)
         plaintext = cipher.decrypt_and_verify(ct, tag)
-        return {"output": plaintext.decode("utf-8")}
+        return {"output_bytes": plaintext}
     except Exception as e:
         return {"error": f"ChaCha20 decrypt failed: {e}"}
+
+
+def encrypt(plaintext: str, settings: dict) -> dict:
+    return encrypt_bytes(plaintext.encode("utf-8"), settings)
+
+
+def decrypt(ciphertext_b64: str, settings: dict) -> dict:
+    result = decrypt_bytes(ciphertext_b64, settings)
+    if "error" in result:
+        return result
+    return {"output": result["output_bytes"].decode("utf-8")}
 
 
 def get_visualization_steps(plaintext: str, settings: dict) -> list:
