@@ -1,0 +1,68 @@
+{
+  "decks": [
+    {
+      "id": "core-concepts",
+      "title": "Core Concepts",
+      "topic": "Foundations",
+      "description": "Key distinctions that matter before choosing any algorithm.",
+      "cards": [
+        {
+          "front": "Encryption vs encoding",
+          "back": "Encryption is meant to protect confidentiality with a key. Encoding only changes representation for transport or storage."
+        },
+        {
+          "front": "Hashing",
+          "back": "Hashing creates a fixed-size digest and is designed to be one-way. It is used for integrity checks, fingerprints, and related workflows."
+        },
+        {
+          "front": "HMAC",
+          "back": "HMAC combines a secure hash with a shared secret key to verify integrity and origin."
+        },
+        {
+          "front": "Authenticated encryption",
+          "back": "Authenticated encryption protects confidentiality and detects tampering in one workflow. Examples include AES-GCM and ChaCha20-Poly1305."
+        },
+        {
+          "front": "Symmetric encryption",
+          "back": "The same secret key is used to encrypt and decrypt. This is fast and practical for larger data."
+        },
+        {
+          "front": "Asymmetric encryption",
+          "back": "A public/private key pair is used. It is helpful for key exchange and signatures, but slower for bulk data."
+        }
+      ]
+    },
+    {
+      "id": "practical-selection",
+      "title": "Practical Algorithm Selection",
+      "topic": "Practical Use",
+      "description": "Short reminders for choosing the right family of tools.",
+      "cards": [
+        {
+          "front": "Best default for new file encryption",
+          "back": "Prefer AES-GCM or ChaCha20-Poly1305. Fernet is also a good high-level choice when you want a simpler API."
+        },
+        {
+          "front": "When to use Base64",
+          "back": "Use Base64 when you need a text-safe representation of binary data, not when you need secrecy."
+        },
+        {
+          "front": "Legacy algorithms",
+          "back": "Legacy algorithms may still appear in old systems, but they should not be selected for new designs."
+        },
+        {
+          "front": "Why key handling matters",
+          "back": "Even strong algorithms fail in practice if the key is lost, reused unsafely, or exposed to the wrong people."
+        },
+        {
+          "front": "What to compare in CryptoLab",
+          "back": "Compare output characteristics, timing, and the type of security guarantee each algorithm provides, not just whether it produces text."
+        },
+        {
+          "front": "Historical ciphers",
+          "back": "Treat historical ciphers as learning tools. Their main value is understanding how modern cryptography improved on them."
+        }
+      ]
+    }
+  ]
+}

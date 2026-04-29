@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.3.0 - 2026-04-28
+
+- Added a new Study tab with quiz practice and flashcard review
+- Added schema-driven study rendering backed by `data/study/schema.json`
+- Added JSON study content files for quizzes and flashcards
+- Added validation and tests for study schema and content bundles
+
 ## 1.2.0 - 2026-04-27
 
 - Added shared logo-based branding for the sidebar and major page headers

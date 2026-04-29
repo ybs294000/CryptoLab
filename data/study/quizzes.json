@@ -1,0 +1,163 @@
+{
+  "quiz_sets": [
+    {
+      "id": "modern-encryption-basics",
+      "title": "Modern Encryption Basics",
+      "topic": "Modern Encryption",
+      "difficulty": "Beginner",
+      "description": "Core concepts behind authenticated encryption, symmetric keys, and safe defaults.",
+      "questions": [
+        {
+          "prompt": "Which option is the safest default for new symmetric file encryption in CryptoLab?",
+          "options": [
+            "AES-CBC without authentication",
+            "AES-GCM or ChaCha20-Poly1305",
+            "Caesar cipher with a longer key",
+            "Base64 with a secret password"
+          ],
+          "answer_index": 1,
+          "explanation": "Authenticated encryption modes such as AES-GCM and ChaCha20-Poly1305 protect both confidentiality and integrity."
+        },
+        {
+          "prompt": "What is the main role of a symmetric encryption key?",
+          "options": [
+            "It replaces the need for ciphertext",
+            "It is used for both encryption and decryption",
+            "It can be published openly",
+            "It only verifies message integrity"
+          ],
+          "answer_index": 1,
+          "explanation": "Symmetric systems rely on the same secret key to encrypt and decrypt the data."
+        },
+        {
+          "prompt": "Why does CryptoLab show generated AES and ChaCha20 keys in base64?",
+          "options": [
+            "Base64 makes the key stronger",
+            "Base64 lets binary key bytes be copied safely as text",
+            "Base64 removes the need for decryption settings",
+            "Base64 turns encryption into hashing"
+          ],
+          "answer_index": 1,
+          "explanation": "The underlying key is still binary. Base64 is just a safe text representation for copying and storing it."
+        },
+        {
+          "prompt": "What should you do immediately after CryptoLab auto-generates an encryption key?",
+          "options": [
+            "Ignore it because the package stores everything needed forever",
+            "Save it somewhere secure if you need to decrypt later",
+            "Convert it to ROT13",
+            "Paste it into the plaintext field"
+          ],
+          "answer_index": 1,
+          "explanation": "Without the exact key, decryption will not succeed later."
+        }
+      ]
+    },
+    {
+      "id": "hashing-and-authentication",
+      "title": "Hashing And Authentication",
+      "topic": "Hashing",
+      "difficulty": "Intermediate",
+      "description": "Review one-way hashing, MACs, and what counts as integrity protection.",
+      "questions": [
+        {
+          "prompt": "What makes hashing different from encryption?",
+          "options": [
+            "Hashing is reversible with the correct key",
+            "Hashing produces a fixed-size digest and is intended to be one-way",
+            "Hashing always uses a public key",
+            "Hashing only works on images and files"
+          ],
+          "answer_index": 1,
+          "explanation": "A secure hash function is designed to be one-way and to produce a digest rather than recoverable plaintext."
+        },
+        {
+          "prompt": "What problem does HMAC solve compared with a plain hash?",
+          "options": [
+            "It compresses the message better",
+            "It adds a shared secret so integrity checks cannot be forged easily",
+            "It converts the result into ciphertext",
+            "It removes the need for a key"
+          ],
+          "answer_index": 1,
+          "explanation": "HMAC combines the message with a shared secret key so an attacker cannot recompute the correct tag without that key."
+        },
+        {
+          "prompt": "Why should MD5 and SHA-1 be avoided for security decisions?",
+          "options": [
+            "They are too slow to compute",
+            "They have collision weaknesses and are no longer considered safe",
+            "They only work on English text",
+            "They are not supported by Python"
+          ],
+          "answer_index": 1,
+          "explanation": "Collision attacks make MD5 and SHA-1 unsuitable for modern security-sensitive uses."
+        },
+        {
+          "prompt": "If you only need to verify that a downloaded file has not changed, which choice is most appropriate?",
+          "options": [
+            "A secure hash such as SHA-256",
+            "Base64 encoding",
+            "Caesar encryption",
+            "A random token generator"
+          ],
+          "answer_index": 0,
+          "explanation": "A secure hash digest is commonly used to compare file integrity when no shared secret is required."
+        }
+      ]
+    },
+    {
+      "id": "classical-and-encoding",
+      "title": "Classical Ciphers And Encoding",
+      "topic": "Classical And Encoding",
+      "difficulty": "Beginner",
+      "description": "Separate historical ciphers from simple encoding tools and know when neither provides real security.",
+      "questions": [
+        {
+          "prompt": "What is the main reason Base64 should not be treated as encryption?",
+          "options": [
+            "It changes the alphabet size",
+            "It is trivially reversible and provides no secrecy",
+            "It only works on short strings",
+            "It requires a 256-bit key"
+          ],
+          "answer_index": 1,
+          "explanation": "Encoding changes representation, not security. Anyone can decode Base64 without a secret."
+        },
+        {
+          "prompt": "Why are classical ciphers like Caesar and Vigenere included in CryptoLab?",
+          "options": [
+            "They are recommended for production systems",
+            "They are educational examples of how cryptography evolved",
+            "They replace modern authenticated encryption",
+            "They store file metadata better"
+          ],
+          "answer_index": 1,
+          "explanation": "Classical ciphers are useful for learning historical ideas, but they are not safe for real-world protection."
+        },
+        {
+          "prompt": "Which statement about ROT13 is true?",
+          "options": [
+            "It is an AEAD mode",
+            "It is a fixed Caesar-style transformation and not real security",
+            "It requires a random nonce",
+            "It is stronger than AES-256"
+          ],
+          "answer_index": 1,
+          "explanation": "ROT13 is a simple reversible substitution and is included only as a basic encoding-style transform."
+        },
+        {
+          "prompt": "What kind of attack breaks monoalphabetic ciphers easily when enough ciphertext is available?",
+          "options": [
+            "Frequency analysis",
+            "Quantum tunneling",
+            "Binary decoding",
+            "Image compression"
+          ],
+          "answer_index": 0,
+          "explanation": "Monoalphabetic ciphers preserve letter-frequency patterns, which makes them vulnerable to frequency analysis."
+        }
+      ]
+    }
+  ]
+}

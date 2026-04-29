@@ -11,6 +11,7 @@ The app now also includes a secure file workflow for protecting common binary fi
 - Batch text processing for `.txt` files
 - Secure File Vault for encrypting and decrypting common binary files
 - Learn tab with JSON-driven metadata and concept explainers
+- Study tab with JSON-driven quizzes and flashcards rendered from a schema file
 - Session history, saved algorithms, and recent activity
 - Shared logo branding and dark professional UI theme
 - Automated tests with generated fixtures and markdown test reports
@@ -52,6 +53,7 @@ CryptoLab/
 ├── assets/
 ├── core/
 ├── data/
+│   └── study/
 ├── docs/
 ├── tabs/
 ├── tests/
@@ -124,6 +126,7 @@ See also:
 - Legacy and weak algorithms are clearly labeled
 - Historical ciphers are included for learning, not real-world security
 - UI theme is coordinated through `.streamlit/config.toml` and `utils/theme_css.py`
+- Study Mode reads its quizzes, flashcards, and layout rules from `data/study/`
 
 ## Current Limits
 

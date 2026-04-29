@@ -8,7 +8,7 @@ from core.registry import get_all, get_by_category
 from utils.branding import render_brand_header
 from utils.ui_helpers import info_box, warning_box
 
-APP_VERSION = "1.1.0"
+APP_VERSION = "1.3.0"
 
 
 def _metric_row() -> None:
@@ -56,12 +56,17 @@ def _journey_cards() -> None:
             "Learn",
             "Read clear explanations, historical context, and practical guidance on what is secure today.",
         ),
+        (
+            "Study",
+            "Use quizzes and flashcards to reinforce concepts, key handling, and algorithm selection.",
+        ),
     ]
 
     st.markdown("### :material/near_me: Where To Start")
     first_row = st.columns(2)
     second_row = st.columns(2)
-    all_columns = [first_row[0], first_row[1], second_row[0], second_row[1]]
+    third_row = st.columns(1)
+    all_columns = [first_row[0], first_row[1], second_row[0], second_row[1], third_row[0]]
 
     for col, (title, body) in zip(all_columns, cards):
         with col:

@@ -24,6 +24,7 @@ import tabs.lab     as tab_lab
 import tabs.compare as tab_compare
 import tabs.batch   as tab_batch
 import tabs.learn   as tab_learn
+import tabs.study   as tab_study
 import tabs.history as tab_history
 import tabs.about   as tab_about
 
@@ -31,7 +32,7 @@ import tabs.about   as tab_about
 def main() -> None:
     # Sidebar global info
     with st.sidebar:
-        render_sidebar_brand("v1.1.0")
+        render_sidebar_brand("v1.3.0")
         st.markdown("---")
         st.caption("Educational cryptography platform.")
         st.caption("All operations use real library-backed implementations.")
@@ -43,6 +44,7 @@ def main() -> None:
         ":material/compare: Compare",
         ":material/upload_file: Batch",
         ":material/school: Learn",
+        ":material/quiz: Study",
         ":material/history: History",
         ":material/info: About",
     ])
@@ -79,11 +81,17 @@ def main() -> None:
 
     with tabs[5]:
         try:
+            tab_study.render()
+        except Exception as e:
+            error_box(f"Study tab error: {e}", title="Study Tab Error")
+
+    with tabs[6]:
+        try:
             tab_history.render()
         except Exception as e:
             error_box(f"History tab error: {e}", title="History Tab Error")
 
-    with tabs[6]:
+    with tabs[7]:
         try:
             tab_about.render()
         except Exception as e:
@@ -93,7 +101,7 @@ def main() -> None:
     st.markdown(
         """
 <div style="text-align:center;padding:10px 0 18px 0;color:var(--text-muted);font-size:13px;">
-  CryptoLab v1.1.0 • Educational cryptography workspace • Local session processing
+  CryptoLab v1.3.0 • Educational cryptography workspace • Local session processing
 </div>
 """,
         unsafe_allow_html=True,

@@ -1,0 +1,88 @@
+{
+  "version": 1,
+  "views": [
+    {
+      "id": "quizzes",
+      "label": "Quizzes",
+      "icon": "quiz",
+      "components": [
+        {
+          "type": "hero_card",
+          "title": "Quiz Practice",
+          "body": "Use short quiz sets to check understanding, review explanations, and reinforce what each algorithm is actually used for."
+        },
+        {
+          "type": "metric_strip",
+          "items": [
+            { "label": "Quiz Sets", "value_key": "quiz_set_count" },
+            { "label": "Questions", "value_key": "quiz_question_count" },
+            { "label": "Topics", "value_key": "quiz_topic_count" }
+          ]
+        },
+        {
+          "type": "topic_filter",
+          "source": "quiz_sets",
+          "label": "Topic"
+        },
+        {
+          "type": "difficulty_filter",
+          "source": "quiz_sets",
+          "label": "Difficulty"
+        },
+        {
+          "type": "dataset_selector",
+          "source": "quiz_sets",
+          "label": "Quiz Set",
+          "empty_message": "No quiz sets match the current filters."
+        },
+        {
+          "type": "selection_summary",
+          "source": "quiz_sets",
+          "template": "{filtered_count} quiz set(s) available for the current filters."
+        },
+        {
+          "type": "quiz_player"
+        }
+      ]
+    },
+    {
+      "id": "flashcards",
+      "label": "Flashcards",
+      "icon": "style",
+      "components": [
+        {
+          "type": "hero_card",
+          "title": "Flashcard Review",
+          "body": "Flip through key concepts, security guidance, and algorithm selection tips at your own pace."
+        },
+        {
+          "type": "metric_strip",
+          "items": [
+            { "label": "Decks", "value_key": "deck_count" },
+            { "label": "Cards", "value_key": "flashcard_count" },
+            { "label": "Topics", "value_key": "flashcard_topic_count" }
+          ]
+        },
+        {
+          "type": "topic_filter",
+          "source": "decks",
+          "label": "Topic"
+        },
+        {
+          "type": "dataset_selector",
+          "source": "decks",
+          "label": "Flashcard Deck",
+          "empty_message": "No flashcard decks match the current filters."
+        },
+        {
+          "type": "selection_summary",
+          "source": "decks",
+          "template": "{filtered_count} deck(s) available for the current filters."
+        },
+        {
+          "type": "flashcard_player"
+        }
+      ]
+    }
+  ]
+}
